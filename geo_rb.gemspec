@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
     "changelog_uri" => "https://github.com/kucho/geo_rb/blob/master/CHANGELOG.md"
   }
 
-  spec.add_runtime_dependency("geographiclib", "~> 0.0.2")
+  spec.add_runtime_dependency("geodesic_wgs84", "~> 1.46.1")
 
   spec.add_development_dependency("bundler", "~> 2.2")
   spec.add_development_dependency("standardrb", "~> 1.0")

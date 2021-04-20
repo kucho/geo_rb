@@ -28,7 +28,7 @@ describe GeoRb::Distance do
     context "when trip between poles" do
       let(:locations) { [north_pole, south_pole] }
 
-      it { should be_within(12).of(earth_circumference / 2) }
+      it { should be_within(13).of(earth_circumference / 2) }
     end
   end
 end

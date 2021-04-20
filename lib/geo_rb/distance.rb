@@ -1,4 +1,4 @@
-require "geographiclib"
+require "geodesic_wgs84"
 
 module GeoRb
   class Distance
@@ -25,8 +25,7 @@ module GeoRb
 
     def measure(a, b)
       ensure_same_altitude(a, b)
-      r = GeographicLib::Geodesic::WGS84.inverse(a.latitude, a.longitude, b.latitude, b.longitude)
-      r[:s12] / 1_000
+      Wgs84.new.distance(a.latitude, a.longitude, b.latitude, b.longitude).first / 1_000
     end
 
     private
