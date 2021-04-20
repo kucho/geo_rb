@@ -31,4 +31,28 @@ describe GeoRb::Distance do
       it { should be_within(13).of(earth_circumference / 2) }
     end
   end
+
+  describe ".between" do
+    subject { described_class.between(*locations).km }
+
+    context "with one valid address" do
+      let(:locations) { ["Jockey Plaza, Lima"] }
+
+      it { is_expected.to eq 0 }
+    end
+
+    context "with two valid addresses" do
+      let(:locations) { ["Jockey Plaza, Lima", "Palacio de Justicia, Lima"] }
+
+      it { should be_within(0.5).of(7) }
+    end
+
+    context "with mixed addresses" do
+      let(:locations) { ["rhu9223u8r2f", "Palacio de Justicia, Lima"] }
+
+      it "fails" do
+        expect { subject }.to raise_error(GeoRb::LocationError)
+      end
+    end
+  end
 end

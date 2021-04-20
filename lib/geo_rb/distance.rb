@@ -1,4 +1,6 @@
+require "concurrent"
 require "geodesic_wgs84"
+
 
 module GeoRb
   class Distance
@@ -7,10 +9,21 @@ module GeoRb
     attr_reader :kilometers
     alias_method :km, :kilometers
 
+    def self.between(*addresses, adapter: GeoRb::GeoCoders::Nominatim)
+      return new if addresses.size == 1
+
+      requests = addresses.map do |address|
+        Concurrent::Promises.future(address) { |a| adapter.new.geocode(a) }
+      end
+
+      locations = Concurrent::Promises.zip(*requests).value!
+      new(*locations)
+    end
+
     def initialize(*locations)
       @kilometers = case locations.size
-      when 1
-        Float(locations.first) if locations.size == 1
+      when 0..1
+        0
       else
         locations.each_cons(2).reduce(0) do |distance, pair|
           a, b = sanitize_location(pair.first), sanitize_location(pair.last)
