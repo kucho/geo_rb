@@ -42,9 +42,9 @@ describe GeoRb::Distance do
     end
 
     context "with two valid addresses" do
-      let(:locations) { ["Jockey Plaza, Lima", "Palacio de Justicia, Lima"] }
+      let(:locations) { ["Plaza San Martin, Lima", "Palacio de Justicia, Lima"] }
 
-      it { should be_within(0.5).of(7) }
+      it { is_expected.to eq 0.6650 }
     end
 
     context "with mixed addresses" do

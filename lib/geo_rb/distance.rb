@@ -1,13 +1,14 @@
+require "bigdecimal/util"
 require "concurrent"
 require "geodesic_wgs84"
-
 
 module GeoRb
   class Distance
     EARTH_RADIUS = 6_371.0088
 
-    attr_reader :kilometers
+    attr_reader :kilometers, :meters
     alias_method :km, :kilometers
+    alias_method :m, :meters
 
     def self.between(*addresses, adapter: GeoRb::GeoCoders::Nominatim)
       return new if addresses.size == 1
@@ -21,7 +22,7 @@ module GeoRb
     end
 
     def initialize(*locations)
-      @kilometers = case locations.size
+      @meters = case locations.size
       when 0..1
         0
       else
@@ -30,6 +31,7 @@ module GeoRb
           distance + measure(a, b)
         end
       end
+      @kilometers = @meters.to_d / 1_000
     end
 
     def ensure_same_altitude(a, b)
@@ -38,7 +40,7 @@ module GeoRb
 
     def measure(a, b)
       ensure_same_altitude(a, b)
-      Wgs84.new.distance(a.latitude, a.longitude, b.latitude, b.longitude).first / 1_000
+      Wgs84.new.distance(a.latitude, a.longitude, b.latitude, b.longitude).first.to_d
     end
 
     private
